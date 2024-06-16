@@ -1,0 +1,138 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<link rel="stylesheet" type="text/css" href="/Estilos/homestyles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.7/signalr.min.js" is:inline></script>
+<Layout title="Home">
+	<main>
+        <div class="ctn">
+            <div class="contentContainer">
+            </div>
+            <div class="textContainerdiv">
+                <h1 class="textContainer">Usuarios En Espera: </h1>
+                <h1 class="textContainer turnosPendientes">
+                     32
+                </h1>
+            </div>
+            <div class="cerrarBtnCont">
+                <button onclick="CerrarBanco()">Cerrar banco</button>
+            </div>
+        </div>
+        
+	</main>
+	<script is:inline>
+		try{
+			let JWTToken = sessionStorage.getItem('token');
+			if(JWTToken == null || JWTToken == undefined){
+                sessionStorage.clear();
+				window.location.href = "/login";
+                console.log("No token");
+            }
+			else{
+				let decodedToken = parseJwt(JWTToken);
+				let Rol = decodedToken.role;
+				if(Rol == "Cajero" && Rol != "Admin" || Rol == null || Rol == undefined){
+                    sessionStorage.clear();
+					window.location.href = "/login";
+                    console.log(role);
+                }
+				let IdUsuario = decodedToken.Id;
+				if(IdUsuario != null || IdUsuario != undefined){
+					sessionStorage.setItem('IdUsuario', IdUsuario);
+				}
+				let Nombre = decodedToken.unique_name;
+				console.log(parseJwt(JWTToken));
+				
+			}
+			function parseJwt(token) {
+				let base64Url = token.split('.')[1];
+				let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+				let jsonPayload = decodeURIComponent(window.atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+				return JSON.parse(jsonPayload);
+			}
+		}
+		catch(error){
+			console.log(error);
+            sessionStorage.clear();
+			window.location.href = "/login";
+            
+        }
+		
+	</script>
+    <script is:inline>
+        let TicketsArray = [];
+        let TicketActual;
+       
+        let TurnosPendientesText = document.querySelector('.turnosPendientes');
+        TurnosPendientesText.textContent = TicketsArray.length;
+
+        let connection = new signalR.HubConnectionBuilder()
+            .withUrl("https://atb.websitos256.com/tickets",{
+                skipNegotiaton:true,
+                transport: signalR.HttpTransportType.WebSockets
+            })
+            .withAutomaticReconnect()
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+
+        connection.on("GenerarTicket", (ticket) => {
+            console.log(`Nuevo ticket en espera: ${ticket}`);
+            if(TicketsArray.includes(ticket)){
+                console.log(`Ticket ya existe`);
+                return;
+            }
+            TicketsArray.push(ticket);
+            TurnosPendientesText.textContent = TicketsArray.length;
+        });
+        connection.on("CancelarTicket", (ticket) => {
+            console.log(`Ticket cancelado: ${ticket}`);
+            if(TicketsArray.includes(ticket)){
+                let index = TicketsArray.indexOf(ticket);
+                TicketsArray.splice(index, 1);
+                TurnosPendientesText.textContent = TicketsArray.length;
+            }
+        });
+        async function IniciarConexion(){
+            try {
+                await connection.start();
+                if(connection.state == "Connected"){
+                    try{
+                        console.log("Conectado");
+                    }
+                    catch(error){
+                        console.log(error);
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        
+        
+        connection.onclose(async () => {
+            await IniciarConexion();
+        });
+        IniciarConexion();
+        async function GenerarTicket(){
+            try{
+                await connection.invoke("GenerarTicket");
+            }
+            catch(error){
+                console.log(error);
+            }
+        }
+        async function CerrarBanco(){
+            try{
+                await connection.invoke("CerrarBanco");
+            }
+            catch(error){
+                console.log(error);
+            }
+        }
+    </script>
+</Layout>
+
+<style>
+
+</style>

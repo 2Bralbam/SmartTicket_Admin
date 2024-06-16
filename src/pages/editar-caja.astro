@@ -1,0 +1,110 @@
+---
+import Layout from '../layouts/Layout.astro'
+---
+<Layout title="Editando caja">
+    <main>
+        <div class="container">
+            <h1>Editando</h1>
+            <form>
+                <label for="nombre-caja">Nombre de la caja:</label>
+                <input type="text" id="nombre-caja" name="nombre-caja">
+        
+                <div class="button-container">
+                    <button type="submit" class="btn-aceptar" onclick="SendEdit()">Aceptar</button>
+                    <button type="button" class="cancel" onclick="Back()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    <script is:inline>
+        class Caja {
+            constructor(id, nombre) {
+                this.id = id;
+                this.nombre = nombre;
+            }
+        }
+
+        let ApiUrl = 'https://atb.websitos256.com/api/';
+
+        function Back() {
+            window.location.href = '/cajas';
+        }
+        const InputName = document.getElementById('nombre-caja');
+        let CurrentCajaName = new URLSearchParams(window.location.search).get('name');
+        InputName.value = CurrentCajaName;
+        let QueryId = new URLSearchParams(window.location.search).get('id');
+        if(!QueryId){
+            window.location.href = '/cajas';
+        }
+        document.querySelector("form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            SendEdit();
+        });
+        async function SendEdit() {
+            let caja = new Caja(QueryId, InputName.value);
+            let JWT = sessionStorage.getItem('token');
+            let response = await fetch(`${ApiUrl}Caja`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + JWT
+                },
+                body: JSON.stringify(caja)
+            });
+            if(response.ok){
+                window.location.href = '/cajas';
+            } else {
+                alert('Error al editar la caja');
+            }
+        }
+    </script>
+</Layout>
+<style>
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .container {
+        background-color: #E7E7E7;
+        padding: 20px;
+        border-radius: 10px;
+        width: 400px; /* Ancho aumentado a 400px */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .container h1 {
+        background-color: #002F5B;
+        color: #FFFFFF;
+        padding: 10px;
+        border-radius: 10px 10px 0 0;
+        text-align: center;
+        margin: -20px -20px 20px -20px;
+    }
+    .container label {
+        display: block;
+        margin: 10px 0 5px;
+    }
+    .container input {
+        width: calc(100% - 20px);
+        padding: 8px 10px;
+        margin-bottom: 10px;
+        border: 1px solid #CCCCCC;
+        border-radius: 5px;
+    }
+    .container .button-container {
+        text-align: center;
+    }
+    .container button {
+        width: 45%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #0065AB;
+        color: #FFFFFF;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .container button.cancel {
+        background-color: #0065AB;
+    }
+</style>

@@ -1,0 +1,172 @@
+---
+import Layout from '../layouts/Layout.astro'
+---
+<link rel="stylesheet" href="/Estilos/editaruser.css">
+<Layout title='Editando Usuario'>
+<main>
+    <div class="container">
+        <h1>Editando Usuario</h1>
+        <form>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre">
+    
+            <label for="correo">Correo Electrónico:</label>
+            <input type="email" id="correo" name="correo" >
+    
+            <label for="contraseña">Contraseña:</label>
+            <input type="password" id="contraseña" name="contraseña"/>
+    
+            <label for="rol">Rol:</label>
+            <select id="rol" name="rol">
+
+            </select>
+            <label for="caja">Caja:</label>
+            <select id="caja" name="caja" class="cajas">
+            </select>
+    
+            <div class="button-container">
+                <button type="submit" onclick="ConfirmarEditar()">Aceptar</button>
+                <button type="button" class="cancel" onclick="Back()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+    <script is:inline>
+        let CurrentUser;
+        let ApiUrl = "https://atb.websitos256.com/api/";
+        //let ApiUrl = "https://localhost:7069/api/";
+        let NombreInput = document.getElementById('nombre');
+        let CorreoInput = document.getElementById('correo');
+        let ContraseñaInput = document.getElementById('contraseña');
+        let RolSelect = document.getElementById('rol');
+        let CajaSelect = document.getElementById('caja');
+        class Caja {
+            constructor(id, nombre) {
+                this.id = id;
+                this.nombre = nombre;
+            }
+        }
+        class Usuario {
+        constructor(id, nombre, correo, contraseña, idcaja, idrol) {
+            this.id = id;
+            this.nombre = nombre;
+            this.correo = correo;
+            this.contraseña = contraseña;
+            this.idcaja = idcaja;
+            this.idrol = idrol;
+        }
+    }
+        let CurrentEditingUser = sessionStorage.getItem('CurrentEditingUser');
+        if(!CurrentEditingUser) {
+            window.location.href = '/usuarios';
+        }
+        else{
+            CurrentEditingUser = JSON.parse(CurrentEditingUser);
+            console.log(CurrentEditingUser);
+            CurrentUser = new Usuario(CurrentEditingUser.id, CurrentEditingUser.nombre, CurrentEditingUser.correo, CurrentEditingUser.contraseña, CurrentEditingUser.idcaja, CurrentEditingUser.idrol);
+            if(!CurrentUser){
+                window.location.href = '/usuarios';
+            }
+            if(CurrentUser.idrol == 1){
+                RolSelect.innerHTML = `<option value="1" selected>Administrador</option>
+                <option value="2">Cajero</option>`;
+            }
+            else{
+                RolSelect.innerHTML = `<option value="1">Administrador</option>
+                <option value="2" selected>Cajero</option>`;
+            }
+            NombreInput.value = CurrentUser.nombre;
+            CorreoInput.value = CurrentUser.correo;
+            ContraseñaInput.value = CurrentUser.contraseña;
+            RolSelect.value = CurrentUser.idrol;
+        }
+
+
+        async function GetCajas() {
+            let JWT = sessionStorage.getItem('token');
+            if (!JWT) {
+                window.location.href = '/login';
+            } else {
+                try {
+                    let response = await fetch(`${ApiUrl}Caja`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + JWT
+                        }
+                    });
+                    if (response.ok) {
+                        let data = await response.json();
+                        let tableBody = document.querySelector('tbody'); // Obtén la referencia al tbody de la tabla
+                        let ApiCajas = data.map(caja => new Caja(caja.id, caja.nombre));
+    
+                        ApiCajas.forEach(caja => {
+                            let option = document.createElement('option');
+                            option.value = caja.id;
+                            option.innerText = caja.nombre;
+                            CajaSelect.appendChild(option);
+                        });
+                    } else {
+                        console.error('Error en la respuesta de la API:', response.status);
+                    }
+                } catch (error) {
+                    console.error('Error al obtener datos:', error);
+                }
+            }
+        }
+        document.querySelector("form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            ConfirmarEditar();
+        });
+        async function GetUser(){
+            let JWT = sessionStorage.getItem('token');
+            let response = await fetch(`${ApiUrl}User/${CurrentUser.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${JWT}`
+                }
+            });
+            if(response.ok){
+                let data = await response.json();
+                CurrentUser = new Usuario(data.id, data.nombre, data.correo, data.contraseña, data.idCaja, data.idRol);
+                console.log(CurrentUser);
+            } else {
+                alert('Error al obtener el usuario');
+            }
+        }
+        GetUser();
+        async function ConfirmarEditar() {
+            let JWT = sessionStorage.getItem('token');
+            let usuario = {
+                "id": CurrentUser.id,
+                "nombre": NombreInput.value,
+                "correo": CorreoInput.value,
+                "contraseña": ContraseñaInput.value,
+                "idCaja": CajaSelect.value,
+                "idRol": RolSelect.value
+            }
+            console.log(usuario);
+            let response = await fetch(`${ApiUrl}User`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${JWT}`
+                },
+                body: JSON.stringify(usuario)
+            });
+            if(response.ok){
+                window.location.href = '/usuarios';
+            } else {
+                alert(`Error al editar al usuario: ${await response.text()}`);
+            }
+        }
+        function Back() {
+            CurrentEditingUser = null;
+            CurrentUser = null;
+            sessionStorage.removeItem('CurrentEditingUser');
+            window.location.href = '/usuarios';
+        }
+        GetCajas();
+    </script>
+</main>
+</Layout>

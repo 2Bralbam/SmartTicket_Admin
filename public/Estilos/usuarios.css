@@ -1,0 +1,124 @@
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    transition: margin-left .5s;
+}
+.menu-bar {
+    display: flex;
+    align-items: center;
+}
+.menu-icon {
+    font-size: 24px;
+    margin-right: 20px;
+    cursor: pointer;
+}
+main {
+    padding: 20px;
+    transition: margin-left .5s;
+}
+section {
+    background-color: #E7E7E7;
+    padding: 20px;
+    border-radius: 10px;
+}
+h2 {
+    color: #043263;
+}
+.btn-agregar {
+    background-color: #0065AB;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+.btn-agregar img {
+    margin-right: 10px;
+}
+.tabla-usuarios {
+    width: 100%;
+    border-collapse: collapse;
+}
+.tabla-usuarios th, .tabla-usuarios td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+.tabla-usuarios th {
+    background-color: #072146;
+    color: white;
+}
+.acciones {
+    display: flex;
+    align-items: center;
+}
+.btn-editar, .btn-eliminar {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0 5px;
+}
+.btn-editar img, .btn-eliminar img {
+    width: 20px;
+    height: 20px;
+}
+.barra-lateral {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #043263;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+.barra-lateral a {
+    padding: 10px 15px;
+    text-decoration: none;
+    font-size: 20px;
+    color: white;
+    display: block;
+    transition: 0.3s;
+}
+.barra-lateral a img {
+    margin-right: 10px;
+    vertical-align: middle;
+}
+.barra-lateral a:hover {
+    background-color: #072146;
+}
+.cerrar-btn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+    color: white;
+}
+.cerrar-sesion {
+    position: absolute;
+    bottom: 60px; 
+    width: 100%;
+}
+.cerrar-sesion a {
+    width: 100%;
+    text-align: center;
+}
+.abrir-btn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    color: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}

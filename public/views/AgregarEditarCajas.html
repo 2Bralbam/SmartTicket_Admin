@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Caja</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FFFFFF;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #E7E7E7;
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px; /* Ancho aumentado a 400px */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .container h1 {
+            background-color: #002F5B;
+            color: #FFFFFF;
+            padding: 10px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+            margin: -20px -20px 20px -20px;
+        }
+        .container label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        .container input {
+            width: calc(100% - 20px);
+            padding: 8px 10px;
+            margin-bottom: 10px;
+            border: 1px solid #CCCCCC;
+            border-radius: 5px;
+        }
+        .container .button-container {
+            text-align: center;
+        }
+        .container button {
+            width: 45%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #0065AB;
+            color: #FFFFFF;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .container button.cancel {
+            background-color: #0065AB;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>ATB</h1>
+    <form>
+        <label for="nombre-caja">Nombre de la caja:</label>
+        <input type="text" id="nombre-caja" name="nombre-caja">
+
+        <div class="button-container">
+            <button type="submit">Aceptar</button>
+            <button type="button" class="cancel">Cancelar</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

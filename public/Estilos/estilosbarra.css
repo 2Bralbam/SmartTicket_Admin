@@ -1,0 +1,63 @@
+.barra-lateral {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #003366;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.barra-lateral a {
+    padding: 10px 15px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #f1f1f1;
+    display: block;
+    transition: 0.3s;
+}
+
+.barra-lateral a:hover {
+    background-color: #575757;
+}
+
+.barra-lateral a img {
+    margin-right: 5px;
+}
+
+.cerrar-btn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+#main {
+    transition: margin-left .5s;
+    padding: 16px;
+}
+
+.abrir-btn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #003366;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+}
+
+.abrir-btn:hover {
+    background-color: #444;
+}
+
+.cerrar-sesion {
+    position: absolute;
+    bottom: 4em;
+    left: 5px;
+    color: white;
+    font-size: 15px;
+}

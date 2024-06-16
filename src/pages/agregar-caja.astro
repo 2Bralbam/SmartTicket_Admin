@@ -1,0 +1,111 @@
+---
+import Layout from '../layouts/Layout.astro'
+---
+<Layout title='Agregar Caja'>
+    <main>
+        <div class="container">
+            <h1>Agregando</h1>
+            <form>
+                <label for="nombre-caja">Nombre de la caja:</label>
+                <input type="text" id="nombre-caja" name="nombre-caja" placeholder="(Nombre)" required>
+        
+                <div class="button-container">
+                    <button type="submit" class="btn-aceptar">Aceptar</button>
+                    <button type="button" class="cancel" onclick="Back()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    <script is:inline>
+        let ApiUrl = 'https://atb.websitos256.com/api/';
+        let InputName = document.getElementById('nombre-caja');
+        class Caja {
+            constructor(id, nombre) {
+                this.id = id;
+                this.nombre = nombre;
+            }
+        }
+        function Back() {
+            window.location.href = '/cajas';
+        }
+        document.querySelector("form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            GuardarCaja();
+        });
+        async function GuardarCaja(){
+            if (InputName.value == '' || InputName.value == null || InputName.value == undefined) {
+                alert('El nombre de la caja no puede estar vacío');
+                return;
+            }
+            let caja = new Caja(0, InputName.value);
+            let JWT = sessionStorage.getItem('token');
+            let CajaAgregar = {
+                "id": 0,
+                "nombre": caja.nombre
+            }
+            let response = await fetch(ApiUrl + 'Caja', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + JWT
+                },
+                body: JSON.stringify(CajaAgregar)
+            });
+            if (response.ok) {
+                alert('Caja agregada correctamente');
+                window.location.href = '/cajas';
+            } else {
+                alert('Error al agregar la caja');
+            }
+        }
+    </script>
+</Layout>
+<style>
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .container {
+        background-color: #E7E7E7;
+        padding: 20px;
+        border-radius: 10px;
+        width: 400px; /* Ancho aumentado a 400px */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .container h1 {
+        background-color: #002F5B;
+        color: #FFFFFF;
+        padding: 10px;
+        border-radius: 10px 10px 0 0;
+        text-align: center;
+        margin: -20px -20px 20px -20px;
+    }
+    .container label {
+        display: block;
+        margin: 10px 0 5px;
+    }
+    .container input {
+        width: calc(100% - 20px);
+        padding: 8px 10px;
+        margin-bottom: 10px;
+        border: 1px solid #CCCCCC;
+        border-radius: 5px;
+    }
+    .container .button-container {
+        text-align: center;
+    }
+    .container button {
+        width: 45%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #0065AB;
+        color: #FFFFFF;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .container button.cancel {
+        background-color: #0065AB;
+    }
+</style>

@@ -1,0 +1,49 @@
+main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+.container {
+    background-color: #E7E7E7;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.container h1 {
+    background-color: #002F5B;
+    color: #FFFFFF;
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
+    text-align: center;
+    margin: -20px -20px 20px -20px;
+}
+.container label {
+    display: block;
+    margin: 10px 0 5px;
+}
+.container input, .container select {
+    width: calc(100% - 20px);
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+}
+.container .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+.container button {
+    width: 48%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0065AB;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+.container button.cancel {
+    background-color: #0065AB;
+}

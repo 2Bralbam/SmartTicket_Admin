@@ -1,0 +1,201 @@
+---
+import Layout from "../layouts/Layout.astro"
+---
+<link rel="stylesheet" href="/Estilos/cajas.css">
+<Layout title="Cajas">
+    <main id="main">
+        <section>
+            <button class="btn-agregar" onclick="AgregarMethod()">
+                <img src="/Assets/icons8-atm-50.png" alt="Agregar Caja"> +
+            </button>
+            <table class="tabla-cajas">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    
+                </tbody>
+            </table>
+        </section>
+        <div class="overlay">
+            <div class="modal">
+                <p class="DeleteText">¿Desea eliminar a Juan Pérez?</p>
+                <div class="modal-acciones">
+                    <button class="aceptar-btn" onclick="ConfirmarEliminar()">Aceptar</button>
+                    <button class="cancelar-btn" onclick="CancelarEliminar()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script is:inline>
+
+    </script>
+    <script is:inline>
+        let ApiUrl = 'https://atb.websitos256.com/api/';
+        let overlay = document.querySelector('.overlay');
+        class Caja {
+            constructor(id, nombre) {
+                this.id = id;
+                this.nombre = nombre;
+            }
+        }
+        let EliminarModel;
+        let cajas = [];
+        async function GetCajas() {
+            let JWT = sessionStorage.getItem('token');
+            if (!JWT) {
+                window.location.href = '/login';
+            } else {
+                try {
+                    let response = await fetch(`${ApiUrl}Caja`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + JWT
+                        }
+                    });
+                    if (response.ok) {
+                        let data = await response.json();
+                        let tableBody = document.querySelector('tbody'); // Obtén la referencia al tbody de la tabla
+                        let ApiCajas = data.map(caja => new Caja(caja.id, caja.nombre));
+    
+                        ApiCajas.forEach(caja => {
+                            if (!cajas.find(c => c.id == caja.id)) {
+                                cajas.push(caja);
+                            }
+                            let tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${caja.id}</td>
+                                <td>
+                                    ${caja.nombre}
+                                    <span class="acciones">
+                                        <button class="btn-editar" id="${caja.id}">
+                                            <img src="/Assets/Editar.png" alt="Editar" class="img-editar" id="${caja.id}">
+                                        </button>
+                                        <button class="btn-eliminar" id="${caja.id}">
+                                            <img src="/Assets/Eliminar.png" alt="Eliminar" class="img-eliminar" id="${caja.id}">
+                                        </button>
+                                    </span>
+                                </td>
+                            `;
+                            tableBody.appendChild(tr); // Agrega la fila al tbody
+                            SetEventListener();
+                        });
+                    } else {
+                        console.error('Error en la respuesta de la API:', response.status);
+                    }
+                } catch (error) {
+                    console.error('Error al obtener datos:', error);
+                }
+            }
+        }
+        function SetEventListener() {
+            let btnEditar = document.querySelectorAll('.img-editar');
+            let btnEliminar = document.querySelectorAll('.img-eliminar');
+
+            btnEditar.forEach(btn => {
+                btn.addEventListener('click', (element) => {
+                    let id = element.target.id;
+                    if(!id) return;
+                    let name = cajas.find(c => c.id == id).nombre;
+                    window.location.href = '/editar-caja?id=' + id + '&name=' + name;
+                });
+            });
+
+            btnEliminar.forEach(btn => {
+                btn.addEventListener('click', (element) => {
+                    let id = element.target.id;
+                    if(!id) return;
+                    let name = cajas.find(c => c.id == id).nombre;
+                    let EliminarName = document.querySelector('.DeleteText');
+                    overlay.style.visibility = 'visible';
+                    EliminarName.innerHTML = `¿Desea eliminar a ${name}?`;
+                    EliminarModel = new Caja(id, name);
+                });
+            });
+        }
+        function CancelarEliminar() {
+            overlay.style.visibility = 'collapse';
+            EliminarModel = null;
+        }
+        async function ConfirmarEliminar() {
+            let JWT = sessionStorage.getItem('token');
+            if (!JWT) {
+                window.location.href = '/login';
+            } else {
+                try {
+                let response = await fetch(`${ApiUrl}Caja`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + JWT
+                    },
+                    body: JSON.stringify(EliminarModel)
+                });
+                if (response.ok) {
+                    let data = await response.json();
+                    console.log(data);
+                    window.location.reload();
+                } else {
+                    console.error('Error en la respuesta de la API:', response.status);
+                }
+            } catch (error) {
+                console.error('Error al obtener datos:', error);
+            }
+            }
+        }
+        function AgregarMethod() {
+            window.location.href = '/agregar-caja';
+        }
+        GetCajas();
+    </script>
+</Layout>
+<style>
+    .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            visibility: collapse;
+        }
+        .modal {
+            background-color: #E7E7E7;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 350px;
+            width: 80%;
+        }
+        .modal p {
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+        .modal-acciones {
+            display: flex;
+            justify-content: space-around;
+        }
+        .modal-acciones button {
+            width: 40%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background-color: #0065AB;
+            color: #FFFFFF;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .modal-acciones button.cancelar-btn {
+            background-color: #0065AB;
+            color:  #CCCCCC;
+        }
+</style>

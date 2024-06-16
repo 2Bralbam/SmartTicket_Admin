@@ -1,0 +1,61 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+---
+<link rel="stylesheet" type="text/css" href="/Estilos/loginstyles.css">
+<Layout title="Login">
+    <main>
+        
+        <form>
+            <h3 style="color: #072146;">
+				Admin panel
+			</h3>
+            <h1 class="SaludoText">
+                ¡Hola de nuevo!
+            </h1>
+            
+            <input type="text" name="Usuario" id="Usuario" placeholder="Usuario">
+            <input type="password" name="Contraseña" id="Contraseña" placeholder="Contraseña">
+            <input type="submit" value="Iniciar Sesión">
+        </form>
+    </main>
+    
+    <script is:inline>
+        sessionStorage.clear();
+        let ApiUrl = "https://atb.websitos256.com/api/";
+        document.querySelector("form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            let user = document.querySelector("#Usuario").value;
+            let password = document.querySelector("#Contraseña").value;
+            Login(user,password);
+        });
+        async function Login(user, password){
+        try {
+            let data = {
+                "email": user,
+                "password": password
+            }
+            let response = await fetch(ApiUrl + "Login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8"
+                },
+                body: JSON.stringify(data)
+            });
+            
+            if(response.status == 200){
+                let JWTToken = await response.text();
+                sessionStorage.setItem("token",JWTToken);
+                console.log(JWTToken);
+                window.location.href = "/home";
+            }
+            else{
+                alert("Usuario o contraseña incorrectos");
+            }
+        }
+        catch (error) {
+                console.log('Error:', error);
+        }
+    }
+    </script>
+</Layout>

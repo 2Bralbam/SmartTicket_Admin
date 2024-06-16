@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/public/Estilos/genericstyles.css">
+    <link rel="stylesheet" type="text/css" href="/public/Estilos/loginstyles.css">
+    <title>Iniciar Sesión</title>
+</head>
+<body>
+    <header>
+        <a href="#">
+            <h1>Smart Ticket</h1>
+        </a>
+        <div>
+
+        </div>
+    </header>
+    <main>
+        <form>
+            <h1 class="SaludoText">
+                ¡Hola de nuevo!
+            </h1>
+            <input type="text" name="Usuario" id="Usuario" placeholder="Usuario">
+            <input type="password" name="Contraseña" id="Contraseña" placeholder="Contraseña">
+            <input type="submit" value="Iniciar Sesión">
+        </form>
+    </main>
+    <script>
+        document.querySelector("form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            if(document.querySelector("#Usuario").value != "" && document.querySelector("#Contraseña").value != "")
+                window.location.href = "/CajaViews/Home.html";
+            else{
+
+            }
+            
+        }); 
+    </script>
+    <footer>
+
+    </footer>
+</body>
+</html>
