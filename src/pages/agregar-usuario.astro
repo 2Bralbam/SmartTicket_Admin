@@ -34,7 +34,7 @@ import Layout from '../layouts/Layout.astro'
     <script is:inline>
         let CurrentUser;
         let form = document.querySelector('form');
-        let ApiUrl = "https://atb.websitos256.com/api/";
+        let ApiUrl = "https://atbapi.websitos256.com/api/";
         let NombreInput = document.getElementById('nombre');
         let CorreoInput = document.getElementById('correo');
         let ContraseñaInput = document.getElementById('contraseña');
@@ -127,7 +127,7 @@ import Layout from '../layouts/Layout.astro'
                 "idCaja": NewUser.IdCaja,
                 "idRol": NewUser.IdRol
             }
-            let response = await fetch(`https://atb.websitos256.com/api/User`, {
+            let response = await fetch(`https://atbapi.websitos256.com/api/User`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

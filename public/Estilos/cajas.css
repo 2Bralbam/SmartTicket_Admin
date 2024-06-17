@@ -6,7 +6,6 @@ body {
         padding: 0;
         transition: margin-left .5s;
     }
-
     .menu-bar {
         display: flex;
         align-items: center;
