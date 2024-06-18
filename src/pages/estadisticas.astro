@@ -1,0 +1,70 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<link rel="stylesheet" type="text/css" href="/Estilos/homestyles.css">
+<link rel="stylesheet" type="text/css" href="/Estilos/estadisticas.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.7/signalr.min.js" is:inline></script>
+<Layout title="Home">
+	<main>
+        <h1>ATB:<br><span>ESTADISTICAS</span></h1>
+    <div id="contenedor">
+        
+        <div class="card">
+            <h3>Tiempo de espera promedio:</h3>
+            <p id="horasEspera">0</p>
+            <div class="change down">Horas</div>
+        </div>
+        <div class="card">
+            <h3>Tiempo de atención promedio:</h3>
+            <p id="horasAtencion">0</p>
+            <div class="change down">Tiempo</div>
+        </div>
+        <div class="cajasC">
+            
+        <h1 style="color:black;">Cajas</h1>
+            <div class="container">
+            </div>
+
+        </div>
+    </div>
+	</main>
+    <script is:inline>
+        let divContainer = document.querySelector(".container");
+        let ApiUrl = "https://atbapi.websitos256.com/api/";
+        let Jwt = sessionStorage.getItem('token');
+        let horasEsperaText = document.querySelector("#horasEspera");
+        let horasAtencionText = document.querySelector("#horasAtencion");
+        async function GetData(){
+    let response = await fetch(ApiUrl + "estadisticas", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json; charset=UTF-8",
+            'Authorization': `Bearer ${Jwt}`
+        }
+    });
+    
+    if(response.status == 200){
+        let Json = await response.json();
+        console.log(Json);
+        horasEsperaText.innerHTML = Json.tiempoPromedioDeEspera ?? '0';
+        horasAtencionText.innerHTML = Json.tiempoPromedioDeAtencion ?? '0';
+        
+        // Assuming 'divContainer' is the container where you want to add the cards
+        for (let caja in Json.personasAtendidasPorCaja) {
+            let div = document.createElement('div');
+            console.log(div)
+            div.classList.add('card'); // Add a 'card' class if you have specific styles for cards
+            div.innerHTML = `<h3>${caja}:</h3>
+                             <p>${Json.personasAtendidasPorCaja[caja]}</p>
+                             <div class="change up">Personas atendidas</div>`;
+            divContainer.append(div);
+        }
+    }
+    if(response.status == 401){
+        window.location.href = "/login";
+    }
+}
+
+        GetData();
+    </script>
+</Layout>

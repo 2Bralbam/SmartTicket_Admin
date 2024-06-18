@@ -10,7 +10,6 @@
     "astro": "astro"
   },
   "dependencies": {
-    "ViewTransitions.astro": "link:ViewTransitions.astro",
     "astro": "^4.10.2"
   }
 }
