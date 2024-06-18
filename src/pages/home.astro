@@ -15,6 +15,7 @@ import Layout from '../layouts/Layout.astro';
                 </h1>
             </div>
             <div class="cerrarBtnCont">
+                <button onclick="AbrirBanco()">Abrir banco</button>
                 <button onclick="CerrarBanco()">Cerrar banco</button>
             </div>
         </div>
@@ -77,6 +78,10 @@ import Layout from '../layouts/Layout.astro';
 
 
         connection.on("GenerarTicket", (ticket) => {
+            if(ticket == "El banco esta cerrado"){
+                console.log("El banco esta cerrado");
+                return;
+            }
             console.log(`Nuevo ticket en espera: ${ticket}`);
             if(TicketsArray.includes(ticket)){
                 console.log(`Ticket ya existe`);
@@ -124,7 +129,55 @@ import Layout from '../layouts/Layout.astro';
         }
         async function CerrarBanco(){
             try{
-                await connection.invoke("CerrarBanco");
+                let url = "https://atbapi.websitos256.com/Cerrar";
+                let token = sessionStorage.getItem('token');
+                let response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        "Estado": false
+                    })
+                });
+                if(response.ok){
+                    alert("Banco cerrado");
+                    console.log("Banco cerrado");
+                }
+                else{
+                    alert("Banco ya cerrado");
+                    console.log("Error al cerrar banco");
+                }
+                        
+            }
+            catch(error){
+                console.log(error);
+            }
+        }
+        async function AbrirBanco(){
+            try{
+                let url = "https://atbapi.websitos256.com/Abrir";
+                let token = sessionStorage.getItem('token');
+                let response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        "Estado": true
+                    })
+                });
+                if(response.ok){
+                    alert("Banco abierto");
+                    console.log("Banco abierto");
+                }
+                else{
+                    alert("Banco ya abierto");
+                    console.log("Error al abrir banco");
+                }
+                        
             }
             catch(error){
                 console.log(error);
